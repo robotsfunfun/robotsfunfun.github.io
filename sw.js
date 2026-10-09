@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v1";
+var CACHE = "calm-energy-shell-v2";
 var ASSETS = [
   "./",
   "./index.html",
@@ -38,17 +38,24 @@ self.addEventListener("fetch", function (event) {
   if (event.request.method !== "GET") return;
   event.respondWith(
     caches.open(CACHE).then(function (cache) {
+      var url = new URL(event.request.url);
+      var freshFirst = event.request.mode === "navigate" || /\.(html|js|css)$/.test(url.pathname);
+      var networked = fetch(event.request).then(function (response) {
+        if (response && response.ok && url.origin === self.location.origin) {
+          cache.put(event.request, response.clone());
+        }
+        return response;
+      });
+      if (freshFirst) {
+        return networked.catch(function () {
+          return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {
+            return cached || (event.request.mode === "navigate" ? cache.match("./index.html") : Promise.reject(new Error("offline")));
+          });
+        });
+      }
       return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {
         if (cached) return cached;
-        return fetch(event.request).then(function (response) {
-          if (response && response.ok && new URL(event.request.url).origin === self.location.origin) {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        }).catch(function () {
-          if (event.request.mode === "navigate") {
-            return cache.match("./index.html");
-          }
+        return networked.catch(function () {
           return Promise.reject(new Error("offline"));
         });
       });

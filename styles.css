@@ -96,14 +96,43 @@ button:focus-visible {
 }
 
 .mute-btn {
-  width: 48px;
-  height: 48px;
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
-  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
   box-shadow: var(--shadow);
+}
+
+.mute-btn svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.mute-btn .speaker-slash {
+  display: none;
+}
+
+.mute-btn.is-muted {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.mute-btn.is-muted .speaker-waves {
+  display: none;
+}
+
+.mute-btn.is-muted .speaker-slash {
+  display: block;
 }
 
 .mute-btn.is-pressed {

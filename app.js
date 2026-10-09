@@ -146,30 +146,54 @@
   }
 
   function renderMute() {
-    var onIcon = muteBtn.querySelector(".icon-on");
-    var offIcon = muteBtn.querySelector(".icon-off");
-    onIcon.hidden = state.muted;
-    offIcon.hidden = !state.muted;
+    muteBtn.classList.toggle("is-muted", state.muted);
+    var label = muteBtn.querySelector(".mute-label");
+    if (label) label.textContent = state.muted ? "音效關" : "音效開";
     muteBtn.setAttribute("aria-pressed", state.muted ? "true" : "false");
-    muteBtn.setAttribute("aria-label", state.muted ? "開啟音效" : "關閉音效");
+    muteBtn.setAttribute("aria-label", state.muted ? "音效關，點一下開啟" : "音效開，點一下關閉");
   }
 
   function unlockAudio() {
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
     if (!audioCtx) audioCtx = new AudioCtx();
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume();
-    }
-    var buffer = audioCtx.createBuffer(1, 1, 22050);
-    var source = audioCtx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(audioCtx.destination);
+    // iOS Safari only resumes audio inside the user gesture. Call resume()
+    // synchronously here; pointerdown, touchstart, and touchend all count.
     try {
-      source.start(0);
+      var pending = audioCtx.resume();
+      if (pending && pending.catch) pending.catch(function () {});
     } catch (err) {
-      /* iOS may reject a second silent start; the context is still unlocked. */
+      /* Some browsers throw if resume is called twice. */
     }
+    if (audioCtx.state === "running") return;
+    try {
+      var t0 = audioCtx.currentTime;
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.frequency.setValueAtTime(440, t0);
+      gain.gain.setValueAtTime(0.0008, t0);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.02);
+    } catch (err) {
+      /* Priming can fail if the context is closed; later cues still try. */
+    }
+  }
+
+  function playTone(spec) {
+    var t0 = audioCtx.currentTime + 0.01;
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = spec.type;
+    osc.frequency.setValueAtTime(spec.freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.2, t0 + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + spec.duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(t0);
+    osc.stop(t0 + spec.duration + 0.02);
   }
 
   function playCue(name) {
@@ -177,19 +201,9 @@
     var spec = AUDIO[name];
     if (!spec) return;
     try {
-      if (audioCtx.state === "suspended") audioCtx.resume();
-      var t = audioCtx.currentTime;
-      var osc = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
-      osc.type = spec.type;
-      osc.frequency.setValueAtTime(spec.freq, t);
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.1, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + spec.duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(t);
-      osc.stop(t + spec.duration);
+      var pending = audioCtx.resume();
+      if (pending && pending.catch) pending.catch(function () {});
+      playTone(spec);
     } catch (err) {
       /* Keep the round moving even if audio fails. */
     }
@@ -322,12 +336,8 @@
 
   function toggleMute() {
     state.muted = !state.muted;
-    try {
-      localStorage.setItem("calm-energy-muted", state.muted ? "1" : "0");
-    } catch (err) {
-      /* Ignore private-mode storage failures. */
-    }
     renderMute();
+    if (!state.muted) playCue("hit");
   }
 
   function onPointerDown(event) {
@@ -361,12 +371,18 @@
     el.textContent = String(CONFIG.MAX_SCORE);
   });
 
+  state.muted = false;
   try {
-    state.muted = localStorage.getItem("calm-energy-muted") === "1";
+    localStorage.removeItem("calm-energy-muted");
   } catch (err) {
-    state.muted = false;
+    /* Ignore private-mode storage failures. */
   }
   renderMute();
+
+  var gestureUnlock = { capture: true, passive: true };
+  document.addEventListener("pointerdown", unlockAudio, gestureUnlock);
+  document.addEventListener("touchstart", unlockAudio, gestureUnlock);
+  document.addEventListener("touchend", unlockAudio, gestureUnlock);
 
   var pointerEvent = window.PointerEvent ? "pointerdown" : "touchstart";
   document.addEventListener(pointerEvent, onPointerDown, { passive: false });
@@ -379,7 +395,7 @@
 
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register("./sw.js").catch(function () {});
+      navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch(function () {});
     });
   }
 
@@ -398,6 +414,7 @@
         phase: state.phase,
         shape: state.shape,
         muted: state.muted,
+        audioState: audioCtx ? audioCtx.state : "none",
         history: state.history.slice()
       };
     }

@@ -20,16 +20,14 @@
   <div id="app">
     <header class="header">
       <h1>冷靜法寶 - 小機器人能量訓練</h1>
-      <button type="button" id="mute-btn" class="mute-btn" data-action="mute" aria-pressed="false" aria-label="關閉音效">
-        <svg class="icon-on" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-          <path d="M4 9.5h3.2L12 5.2v13.6l-4.8-4.3H4z" fill="#3b82f6"/>
-          <path d="M15.2 9.2a3.4 3.4 0 0 1 0 5.6" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M17.4 7.2a6 6 0 0 1 0 9.6" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round"/>
+      <button type="button" id="mute-btn" class="mute-btn" data-action="mute" aria-pressed="false" aria-label="音效開，點一下關閉">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path fill="currentColor" d="M5 13h5.4L17 7.2v17.6L10.4 19H5z"/>
+          <path class="speaker-waves" d="M21 12.2a5 5 0 0 1 0 7.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          <path class="speaker-waves" d="M24.2 9.4a9 9 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          <path class="speaker-slash" d="M20.5 11.5l8.5 9M29 11.5l-8.5 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
         </svg>
-        <svg class="icon-off" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" hidden>
-          <path d="M4 9.5h3.2L12 5.2v13.6l-4.8-4.3H4z" fill="#94a3b8"/>
-          <path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+        <span class="mute-label">音效開</span>
       </button>
     </header>
 
