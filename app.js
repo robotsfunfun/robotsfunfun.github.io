@@ -38,7 +38,7 @@
     triangle:
       '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 188,176 12,176" fill="#f43f5e" stroke="#f43f5e" stroke-linejoin="round" stroke-width="18"/></svg>',
     star:
-      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,14 124,74 188,74 136,112 156,174 100,138 44,174 64,112 12,74 76,74" fill="#f43f5e" stroke="#f43f5e" stroke-linejoin="round" stroke-width="10"/></svg>'
+      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 122,74 182,74 134,110 152,168 100,132 48,168 66,110 18,74 78,74" fill="#f43f5e"/></svg>'
   };
 
   var welcomeEl = document.getElementById("welcome");
