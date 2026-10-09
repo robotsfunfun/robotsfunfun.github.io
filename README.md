@@ -13,9 +13,9 @@
 
 ## 線上遊玩
 
-https://tsekityam.github.io/calm-energy-game/
+https://robotsfunfun.github.io/
 
-這個帳號的 GitHub Pages 使用自訂網域，所以上面的網址會轉到 https://kytse.com/calm-energy-game/。用手機直向開啟效果最好。第一次開啟後，服務工作程會把畫面暫存起來，之後沒有網路也能玩。也可以用瀏覽器的「加入主畫面」裝成 App。
+用手機直向開啟效果最好。第一次開啟後，服務工作程會把畫面暫存起來，之後沒有網路也能玩。也可以用瀏覽器的「加入主畫面」裝成 App。
 
 ## 在自己的電腦開啟
 
@@ -31,6 +31,6 @@ python3 -m http.server 8080
 
 Calm Energy is a portrait, mobile-first Go/No-Go game for first graders. Tap blue circles within one second. Do not tap squares, triangles, or stars. There are 10 rounds, 20 points for each correct response, and a maximum of 200.
 
-Play: https://tsekityam.github.io/calm-energy-game/ (redirects to https://kytse.com/calm-energy-game/ because this account uses a custom Pages domain).
+Play: https://robotsfunfun.github.io/.
 
 Open `index.html` in a browser, or serve this folder with any static server. After the first visit over HTTP, the service worker caches the app shell for offline play.
