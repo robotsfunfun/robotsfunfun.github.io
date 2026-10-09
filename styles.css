@@ -336,7 +336,7 @@ main {
     calc(16px + env(safe-area-inset-right))
     calc(16px + env(safe-area-inset-bottom))
     calc(16px + env(safe-area-inset-left));
-  background: rgba(148, 163, 184, 0.38);
+  background: rgba(241, 245, 249, 0.9);
   touch-action: pan-y;
   overflow: auto;
 }
