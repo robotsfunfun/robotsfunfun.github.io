@@ -1,6 +1,6 @@
 {
-  "name": "冷靜法寶：能量控制小遊戲",
-  "short_name": "冷靜法寶",
+  "name": "心平靜氣：小機械人能量控制遊戲",
+  "short_name": "心平靜氣",
   "description": "給小學一年級的 Go/No-Go 衝動控制練習。看到圓形就輕點，其他圖形請忍住。",
   "lang": "zh-Hant",
   "start_url": "./",

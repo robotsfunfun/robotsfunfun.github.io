@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v2";
+var CACHE = "calm-energy-shell-v3";
 var ASSETS = [
   "./",
   "./index.html",

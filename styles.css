@@ -525,3 +525,11 @@ main {
     transition: none;
   }
 }
+
+.welcome-intro {
+  margin: 0 0 1rem;
+  text-align: center;
+  color: #475569;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
