@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v3";
+var CACHE = "calm-energy-shell-v4";
 var ASSETS = [
   "./",
   "./index.html",
@@ -36,28 +36,34 @@ self.addEventListener("activate", function (event) {
 
 self.addEventListener("fetch", function (event) {
   if (event.request.method !== "GET") return;
+  var accept = event.request.headers.get("accept") || "";
+  var isDoc = event.request.mode === "navigate" || accept.indexOf("text/html") !== -1;
+  if (isDoc) {
+    event.respondWith(
+      fetch(event.request).then(function (response) {
+        var copy = response.clone();
+        caches.open(CACHE).then(function (cache) { cache.put(event.request, copy); });
+        return response;
+      }).catch(function () {
+        return caches.match(event.request, { ignoreSearch: true }).then(function (cached) {
+          return cached || caches.match("./index.html");
+        });
+      })
+    );
+    return;
+  }
   event.respondWith(
     caches.open(CACHE).then(function (cache) {
-      var url = new URL(event.request.url);
-      var freshFirst = event.request.mode === "navigate" || /\.(html|js|css)$/.test(url.pathname);
-      var networked = fetch(event.request).then(function (response) {
-        if (response && response.ok && url.origin === self.location.origin) {
-          cache.put(event.request, response.clone());
-        }
-        return response;
-      });
-      if (freshFirst) {
-        return networked.catch(function () {
-          return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {
-            return cached || (event.request.mode === "navigate" ? cache.match("./index.html") : Promise.reject(new Error("offline")));
-          });
-        });
-      }
       return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {
-        if (cached) return cached;
-        return networked.catch(function () {
-          return Promise.reject(new Error("offline"));
+        var networked = fetch(event.request).then(function (response) {
+          if (response && response.status === 200) {
+            cache.put(event.request, response.clone());
+          }
+          return response;
+        }).catch(function () {
+          return cached || Promise.reject(new Error("offline"));
         });
+        return cached || networked;
       });
     })
   );
