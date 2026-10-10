@@ -24,7 +24,23 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="stylesheet" href="styles.css">
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/lit/dist@3.3.3/core/lit-core.min.js">
+  <script type="importmap">
+  {
+    "imports": {
+      "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.3/index.js",
+      "@lit/reactive-element": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/reactive-element.js",
+      "lit-html": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/lit-html.js",
+      "lit-html/": "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/",
+      "lit-element/": "https://cdn.jsdelivr.net/npm/lit-element@4.2.2/"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/lit@3.3.3/index.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/lit-element@4.2.2/lit-element.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/lit-html@3.3.3/lit-html.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/lit-html@3.3.3/is-server.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/reactive-element.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/css-tag.js">
 </head>
 <body>
   <calm-energy-app style="display:block;height:100%"></calm-energy-app>

@@ -1,4 +1,4 @@
-import { LitElement, html, svg, nothing } from "https://cdn.jsdelivr.net/gh/lit/dist@3.3.3/core/lit-core.min.js";
+import { LitElement, html, svg, nothing } from "lit";
 
 var CONFIG = {
   TOTAL_ROUNDS: 10,

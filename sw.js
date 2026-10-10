@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v5";
+var CACHE = "calm-energy-shell-v6";
 var ASSETS = [
   "./",
   "./index.html",
@@ -9,7 +9,12 @@ var ASSETS = [
   "./icons/icon-180.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "https://cdn.jsdelivr.net/gh/lit/dist@3.3.3/core/lit-core.min.js"
+  "https://cdn.jsdelivr.net/npm/lit@3.3.3/index.js",
+  "https://cdn.jsdelivr.net/npm/lit-element@4.2.2/lit-element.js",
+  "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/lit-html.js",
+  "https://cdn.jsdelivr.net/npm/lit-html@3.3.3/is-server.js",
+  "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/reactive-element.js",
+  "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.1.2/css-tag.js"
 ];
 
 self.addEventListener("install", function (event) {
