@@ -24,92 +24,10 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/lit/dist@3.3.3/core/lit-core.min.js">
 </head>
 <body>
-  <div id="app">
-    <header class="header">
-      <h1>心平靜氣：小機械人能量控制遊戲</h1>
-      <button type="button" id="mute-btn" class="mute-btn" data-action="mute" aria-pressed="false" aria-label="音效開，點一下關閉">
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <path fill="currentColor" d="M5 13h5.4L17 7.2v17.6L10.4 19H5z"/>
-          <path class="speaker-waves" d="M21 12.2a5 5 0 0 1 0 7.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-          <path class="speaker-waves" d="M24.2 9.4a9 9 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-          <path class="speaker-slash" d="M20.5 11.5l8.5 9M29 11.5l-8.5 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-        </svg>
-        <span class="mute-label">音效開</span>
-      </button>
-    </header>
-
-    <main>
-      <section id="welcome" class="screen">
-        <div class="robot-wrap" aria-hidden="true">
-          <svg class="robot" viewBox="0 0 160 160">
-            <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="80" cy="22" r="8" fill="#10b981"/>
-            <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff"/>
-            <circle cx="62" cy="76" r="7" fill="#3b82f6"/>
-            <circle cx="98" cy="76" r="7" fill="#3b82f6"/>
-            <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="50" cy="90" r="4" fill="#fecdd3"/>
-            <circle cx="110" cy="90" r="4" fill="#fecdd3"/>
-            <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe"/>
-            <circle cx="72" cy="133" r="3.5" fill="#3b82f6"/>
-            <circle cx="88" cy="133" r="3.5" fill="#10b981"/>
-          </svg>
-        </div>
-
-        <div class="rules">
-          <article class="rule-card rule-go">看到「圓形」👉 輕點圖案或下方按鈕 (得20分)。</article>
-          <article class="rule-card rule-nogo">看到「其他圖形」👉 手放開！忍住不按 (得20分)。</article>
-        </div>
-
-        <button type="button" class="start-btn" data-action="start">開始</button>
-      </section>
-
-      <section id="game" class="screen" hidden>
-        <div class="status" aria-live="polite">
-          <p class="stat"><span class="stat-k">回合</span> <strong id="round-label">1</strong> / <span data-total>10</span></p>
-          <p class="stat"><span class="stat-k">分數</span> <strong id="score-label">0</strong></p>
-        </div>
-
-        <div class="stage">
-          <p id="badge" class="badge" role="status"></p>
-          <div id="fixation" class="fixation" aria-hidden="true">+</div>
-          <button type="button" id="stimulus" class="shape-btn" data-action="respond" hidden aria-label="圖形"></button>
-        </div>
-
-        <button type="button" id="cushion" class="cushion" data-action="respond">輕點這裡 (圓形專用)</button>
-      </section>
-    </main>
-  </div>
-
-  <div id="results" class="results" hidden>
-    <div class="results-card" role="dialog" aria-modal="true" aria-labelledby="results-title" tabindex="-1">
-      <div class="results-robot" aria-hidden="true">
-        <svg viewBox="0 0 160 160">
-          <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="80" cy="22" r="8" fill="#10b981"/>
-          <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff"/>
-          <circle cx="62" cy="76" r="7" fill="#3b82f6"/>
-          <circle cx="98" cy="76" r="7" fill="#3b82f6"/>
-          <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="50" cy="90" r="4" fill="#fecdd3"/>
-          <circle cx="110" cy="90" r="4" fill="#fecdd3"/>
-          <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe"/>
-        </svg>
-      </div>
-      <h2 id="results-title">練習完成</h2>
-      <p class="score-line"><span id="final-score">0</span><span class="score-unit">分</span></p>
-      <p class="score-max">滿分 <span data-max>200</span> 分</p>
-      <p id="tier-text" class="tier-text"></p>
-      <div class="results-actions">
-        <button type="button" class="start-btn" data-action="replay">再玩一次</button>
-        <button type="button" class="ghost-btn" data-action="home">回首頁</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="rotate-hint" role="note">請把手機直著拿喔</div>
-  <script src="app.js"></script>
+  <calm-energy-app style="display:block;height:100%"></calm-energy-app>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
