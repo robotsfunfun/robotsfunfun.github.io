@@ -1,93 +1,10 @@
-import { LitElement, html, svg, nothing } from "lit";
-
-var CONFIG = {
-  TOTAL_ROUNDS: 10,
-  GO_RATIO: 0.6,
-  GO_SHAPE: "circle",
-  NO_GO_SHAPES: ["square", "triangle", "star"],
-  DISPLAY_MS: 1000,
-  ISI_MS: 1000,
-  FEEDBACK_MS: 600,
-  RESULTS_DELAY_MS: 150,
-  DEBOUNCE_MS: 300,
-  HIT_POINTS: 20,
-  REJECTION_POINTS: 20,
-  MAX_SCORE: 200
-};
-
-var AUDIO = {
-  hit: { freq: 600, type: "sine", duration: 0.1 },
-  correctRejection: { freq: 700, type: "sine", duration: 0.1 },
-  falseAlarm: { freq: 220, type: "triangle", duration: 0.15 },
-  miss: { freq: 180, type: "sine", duration: 0.1 }
-};
-
-var SHAPE_LABEL = {
-  circle: "圓形",
-  square: "正方形",
-  triangle: "三角形",
-  star: "星形"
-};
-
-function shapeGraphic(shape) {
-  switch (shape) {
-    case "circle":
-      return svg`<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="76" fill="#3b82f6"></circle></svg>`;
-    case "square":
-      return svg`<svg viewBox="0 0 200 200" aria-hidden="true"><rect x="32" y="32" width="136" height="136" rx="16" fill="#f43f5e"></rect></svg>`;
-    case "triangle":
-      return svg`<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 188,176 12,176" fill="#f43f5e" stroke="#f43f5e" stroke-linejoin="round" stroke-width="18"></polygon></svg>`;
-    case "star":
-      return svg`<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 122,74 182,74 134,110 152,168 100,132 48,168 66,110 18,74 78,74" fill="#f43f5e"></polygon></svg>`;
-    default:
-      return nothing;
-  }
-}
-
-function judge(shape, tapped) {
-  var isGo = shape === CONFIG.GO_SHAPE;
-  if (isGo && tapped) {
-    return {
-      id: "hit",
-      score: CONFIG.HIT_POINTS,
-      text: "太棒了！+" + CONFIG.HIT_POINTS + "分",
-      cue: "hit",
-      good: true
-    };
-  }
-  if (isGo && !tapped) {
-    return { id: "miss", score: 0, text: "哎呀，漏掉了", cue: "miss", good: false };
-  }
-  if (!isGo && !tapped) {
-    return {
-      id: "correctRejection",
-      score: CONFIG.REJECTION_POINTS,
-      text: "忍得好！+" + CONFIG.REJECTION_POINTS + "分",
-      cue: "correctRejection",
-      good: true
-    };
-  }
-  return { id: "falseAlarm", score: 0, text: "手放開，忍住喔！", cue: "falseAlarm", good: false };
-}
-
-function tierMessage(score) {
-  if (score >= CONFIG.MAX_SCORE) {
-    return "🌟 完美的能量控制！你按到了所有圓形，而且看到其他圖形時都成功忍住不按，太厲害了！";
-  }
-  if (score >= 120 && score <= 180) {
-    return "⚡ 反應超快的小達人！你表現得很棒！下次遇到不是圓形的圖案時，記得給自己 1 秒鐘深呼吸，手放開，就能拿到更高分喔！";
-  }
-  return "🌱 正在成長的冷靜法寶！今天練習得很認真喔。多玩幾次，你會越來越進步的！";
-}
-
-function pickShape(random) {
-  var roll = (random || Math.random)();
-  if (roll < CONFIG.GO_RATIO) return CONFIG.GO_SHAPE;
-  var nogoRoll = (random || Math.random)();
-  var index = Math.floor(nogoRoll * CONFIG.NO_GO_SHAPES.length);
-  if (index >= CONFIG.NO_GO_SHAPES.length) index = CONFIG.NO_GO_SHAPES.length - 1;
-  return CONFIG.NO_GO_SHAPES[index];
-}
+import { html } from "lit";
+import { LightElement } from "./components/light-element.js";
+import "./components/calm-header.js";
+import "./components/calm-welcome.js";
+import "./components/calm-game.js";
+import "./components/calm-results.js";
+import { CONFIG, AUDIO, judge, tierMessage, pickShape } from "./game-rules.js";
 
 function takeShape() {
   var queue = window.__calm && window.__calm.queue;
@@ -95,7 +12,7 @@ function takeShape() {
   return pickShape();
 }
 
-class CalmEnergyApp extends LitElement {
+class CalmEnergyApp extends LightElement {
   static get properties() {
     return {
       screen: { state: true },
@@ -107,14 +24,13 @@ class CalmEnergyApp extends LitElement {
       stimulusHidden: { state: true },
       fixationHidden: { state: true },
       popOn: { state: true },
+      popToken: { state: true },
       badgeText: { state: true },
       badgeShow: { state: true },
-      badgeTone: { state: true }
+      badgeTone: { state: true },
+      pressedKey: { state: true },
+      focusToken: { state: true }
     };
-  }
-
-  createRenderRoot() {
-    return this;
   }
 
   constructor() {
@@ -128,9 +44,12 @@ class CalmEnergyApp extends LitElement {
     this.stimulusHidden = true;
     this.fixationHidden = false;
     this.popOn = false;
+    this.popToken = 0;
     this.badgeText = "";
     this.badgeShow = false;
     this.badgeTone = "";
+    this.pressedKey = "";
+    this.focusToken = 0;
     this.session = 0;
     this.responded = false;
     this.history = [];
@@ -138,9 +57,6 @@ class CalmEnergyApp extends LitElement {
     this.stimulusTimer = null;
     this.audioCtx = null;
     this.lastActionAt = Object.create(null);
-    this.pressedKey = "";
-    this._pendingPop = false;
-    this._focusResults = false;
   }
 
   connectedCallback() {
@@ -247,7 +163,7 @@ class CalmEnergyApp extends LitElement {
   showResults() {
     this.phase = "results";
     this.screen = "results";
-    this._focusResults = true;
+    this.focusToken += 1;
   }
 
   presentStimulus(session) {
@@ -258,7 +174,7 @@ class CalmEnergyApp extends LitElement {
     this.fixationHidden = true;
     this.stimulusHidden = false;
     this.popOn = true;
-    this._pendingPop = true;
+    this.popToken += 1;
     var self = this;
     this.stimulusTimer = setTimeout(function () {
       self.stimulusTimer = null;
@@ -380,140 +296,38 @@ class CalmEnergyApp extends LitElement {
     for (var i = 0; i < pressed.length; i++) pressed[i].classList.remove("is-pressed");
   }
 
-  updated() {
-    if (this.pressedKey) {
-      var pressedButton = this.pressedKey === "stimulus" || this.pressedKey === "cushion"
-        ? this.querySelector("#" + this.pressedKey)
-        : this.querySelector('[data-action="' + this.pressedKey + '"]');
-      if (pressedButton) pressedButton.classList.add("is-pressed");
-    }
-    if (this._pendingPop) {
-      this._pendingPop = false;
-      var stimulus = this.querySelector("#stimulus");
-      if (stimulus) {
-        stimulus.classList.remove("pop");
-        void stimulus.offsetWidth;
-        stimulus.classList.add("pop");
-      }
-    }
-    if (this._focusResults) {
-      this._focusResults = false;
-      var card = this.querySelector(".results-card");
-      if (card) card.focus();
-    }
-  }
-
-  badgeClass() {
-    var names = ["badge"];
-    if (this.badgeShow) names.push("show");
-    if (this.badgeTone === "good") names.push("is-good");
-    if (this.badgeTone === "oops") names.push("is-oops");
-    return names.join(" ");
-  }
-
   render() {
-    var roundLabel = this.round > 0 ? this.round : 1;
-    var muteLabel = this.muted ? "音效關" : "音效開";
-    var muteAria = this.muted ? "音效關，點一下開啟" : "音效開，點一下關閉";
     return html`
       <div id="app">
-        <header class="header">
-          <h1>心平靜氣：小機械人能量控制遊戲</h1>
-          <button
-            type="button"
-            id="mute-btn"
-            class=${this.muted ? "mute-btn is-muted" : "mute-btn"}
-            data-action="mute"
-            aria-pressed=${this.muted ? "true" : "false"}
-            aria-label=${muteAria}
-          >
-            <svg viewBox="0 0 32 32" aria-hidden="true">
-              <path fill="currentColor" d="M5 13h5.4L17 7.2v17.6L10.4 19H5z"></path>
-              <path class="speaker-waves" d="M21 12.2a5 5 0 0 1 0 7.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
-              <path class="speaker-waves" d="M24.2 9.4a9 9 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
-              <path class="speaker-slash" d="M20.5 11.5l8.5 9M29 11.5l-8.5 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path>
-            </svg>
-            <span class="mute-label">${muteLabel}</span>
-          </button>
-        </header>
-
+        <calm-header class="header" .muted=${this.muted} .pressed=${this.pressedKey === "mute"}></calm-header>
         <main>
-          <section id="welcome" class="screen" ?hidden=${this.screen !== "welcome"}>
-            <div class="robot-wrap" aria-hidden="true">
-              <svg class="robot" viewBox="0 0 160 160">
-                <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"></line>
-                <circle cx="80" cy="22" r="8" fill="#10b981"></circle>
-                <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff"></rect>
-                <circle cx="62" cy="76" r="7" fill="#3b82f6"></circle>
-                <circle cx="98" cy="76" r="7" fill="#3b82f6"></circle>
-                <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"></path>
-                <circle cx="50" cy="90" r="4" fill="#fecdd3"></circle>
-                <circle cx="110" cy="90" r="4" fill="#fecdd3"></circle>
-                <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe"></rect>
-                <circle cx="72" cy="133" r="3.5" fill="#3b82f6"></circle>
-                <circle cx="88" cy="133" r="3.5" fill="#10b981"></circle>
-              </svg>
-            </div>
-
-            <div class="rules">
-              <article class="rule-card rule-go">看到「圓形」👉 輕點圖案或下方按鈕 (得20分)。</article>
-              <article class="rule-card rule-nogo">看到「其他圖形」👉 手放開！忍住不按 (得20分)。</article>
-            </div>
-
-            <button type="button" class="start-btn" data-action="start">開始</button>
-          </section>
-
-          <section id="game" class="screen" ?hidden=${this.screen === "welcome"}>
-            <div class="status" aria-live="polite">
-              <p class="stat"><span class="stat-k">回合</span> <strong id="round-label">${roundLabel}</strong> / <span data-total>${CONFIG.TOTAL_ROUNDS}</span></p>
-              <p class="stat"><span class="stat-k">分數</span> <strong id="score-label">${this.score}</strong></p>
-            </div>
-
-            <div class="stage">
-              <p id="badge" class=${this.badgeClass()} role="status">${this.badgeText}</p>
-              <div id="fixation" class="fixation" aria-hidden="true" ?hidden=${this.fixationHidden}>+</div>
-              <button
-                type="button"
-                id="stimulus"
-                class=${this.popOn ? "shape-btn pop" : "shape-btn"}
-                data-action="respond"
-                ?hidden=${this.stimulusHidden}
-                data-shape=${this.shape || nothing}
-                aria-label=${this.shape ? (SHAPE_LABEL[this.shape] || "圖形") : "圖形"}
-              >${shapeGraphic(this.shape)}</button>
-            </div>
-
-            <button type="button" id="cushion" class="cushion" data-action="respond">輕點這裡 (圓形專用)</button>
-          </section>
+          <calm-welcome id="welcome" class="screen" ?hidden=${this.screen !== "welcome"} .pressed=${this.pressedKey === "start"}></calm-welcome>
+          <calm-game
+            id="game"
+            class="screen"
+            ?hidden=${this.screen === "welcome"}
+            .round=${this.round}
+            .score=${this.score}
+            .shape=${this.shape}
+            .stimulusHidden=${this.stimulusHidden}
+            .fixationHidden=${this.fixationHidden}
+            .popOn=${this.popOn}
+            .popToken=${this.popToken}
+            .badgeText=${this.badgeText}
+            .badgeShow=${this.badgeShow}
+            .badgeTone=${this.badgeTone}
+            .pressedKey=${this.pressedKey}
+          ></calm-game>
         </main>
       </div>
-
-      <div id="results" class="results" ?hidden=${this.screen !== "results"}>
-        <div class="results-card" role="dialog" aria-modal="true" aria-labelledby="results-title" tabindex="-1">
-          <div class="results-robot" aria-hidden="true">
-            <svg viewBox="0 0 160 160">
-              <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"></line>
-              <circle cx="80" cy="22" r="8" fill="#10b981"></circle>
-              <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff"></rect>
-              <circle cx="62" cy="76" r="7" fill="#3b82f6"></circle>
-              <circle cx="98" cy="76" r="7" fill="#3b82f6"></circle>
-              <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"></path>
-              <circle cx="50" cy="90" r="4" fill="#fecdd3"></circle>
-              <circle cx="110" cy="90" r="4" fill="#fecdd3"></circle>
-              <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe"></rect>
-            </svg>
-          </div>
-          <h2 id="results-title">練習完成</h2>
-          <p class="score-line"><span id="final-score">${this.score}</span><span class="score-unit">分</span></p>
-          <p class="score-max">滿分 <span data-max>${CONFIG.MAX_SCORE}</span> 分</p>
-          <p id="tier-text" class="tier-text">${tierMessage(this.score)}</p>
-          <div class="results-actions">
-            <button type="button" class="start-btn" data-action="replay">再玩一次</button>
-            <button type="button" class="ghost-btn" data-action="home">回首頁</button>
-          </div>
-        </div>
-      </div>
-
+      <calm-results
+        id="results"
+        class="results"
+        ?hidden=${this.screen !== "results"}
+        .score=${this.score}
+        .pressedKey=${this.pressedKey}
+        .focusToken=${this.focusToken}
+      ></calm-results>
       <div class="rotate-hint" role="note">請把手機直著拿喔</div>
     `;
   }

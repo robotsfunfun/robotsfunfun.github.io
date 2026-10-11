@@ -1,9 +1,17 @@
-var CACHE = "calm-energy-shell-v6";
+var CACHE = "calm-energy-shell-v7";
 var ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./game-rules.js",
+  "./components/light-element.js",
+  "./components/graphics.js",
+  "./components/calm-robot.js",
+  "./components/calm-header.js",
+  "./components/calm-welcome.js",
+  "./components/calm-game.js",
+  "./components/calm-results.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-180.png",
