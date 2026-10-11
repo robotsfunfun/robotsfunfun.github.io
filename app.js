@@ -2,18 +2,24 @@
   "use strict";
 
   var CONFIG = {
-    TOTAL_ROUNDS: 10,
+    /* 1.1.0: intermediate difficulty — 15 rounds, 800ms display, random ISI */
+    VERSION: "1.1.0",
+    TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
     NO_GO_SHAPES: ["square", "triangle", "star"],
-    DISPLAY_MS: 1000,
-    ISI_MS: 1000,
+    DISPLAY_MS: 800,
+    ISI_MIN_MS: 700,
+    ISI_MAX_MS: 1000,
     FEEDBACK_MS: 600,
     RESULTS_DELAY_MS: 150,
-    DEBOUNCE_MS: 300,
+    DEBOUNCE_MS: 280,
     HIT_POINTS: 20,
     REJECTION_POINTS: 20,
-    MAX_SCORE: 200
+    MAX_SCORE: 300,
+    /* Results modal tier bands (section 4.4) */
+    TIER_MID_MIN: 180,
+    TIER_MID_MAX: 280
   };
 
   var AUDIO = {
@@ -101,10 +107,16 @@
     if (score >= CONFIG.MAX_SCORE) {
       return "🌟 完美的能量控制！你按到了所有圓形，而且看到其他圖形時都成功忍住不按，太厲害了！";
     }
-    if (score >= 120 && score <= 180) {
+    if (score >= CONFIG.TIER_MID_MIN && score <= CONFIG.TIER_MID_MAX) {
       return "⚡ 反應超快的小達人！你表現得很棒！下次遇到不是圓形的圖案時，記得給自己 1 秒鐘深呼吸，手放開，就能拿到更高分喔！";
     }
     return "🌱 正在成長的冷靜法寶！今天練習得很認真喔。多玩幾次，你會越來越進步的！";
+  }
+
+  function isiMs(random) {
+    var span = CONFIG.ISI_MAX_MS - CONFIG.ISI_MIN_MS;
+    var roll = (random || Math.random)();
+    return CONFIG.ISI_MIN_MS + Math.floor(roll * (span + 1));
   }
 
   function pickShape(random) {
@@ -259,7 +271,7 @@
     stimulus.removeAttribute("data-shape");
     later(function () {
       presentStimulus(session);
-    }, CONFIG.ISI_MS);
+    }, isiMs());
   }
 
   function resolveRound(tapped, session) {
@@ -370,6 +382,9 @@
   document.querySelectorAll("[data-max]").forEach(function (el) {
     el.textContent = String(CONFIG.MAX_SCORE);
   });
+  document.querySelectorAll("[data-version]").forEach(function (el) {
+    el.textContent = CONFIG.VERSION;
+  });
 
   state.muted = false;
   try {
@@ -405,6 +420,7 @@
     judge: judge,
     tierMessage: tierMessage,
     pickShape: pickShape,
+    isiMs: isiMs,
     queue: [],
     getState: function () {
       return {
