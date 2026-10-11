@@ -14,7 +14,10 @@
     DEBOUNCE_MS: 280,
     HIT_POINTS: 20,
     REJECTION_POINTS: 20,
-    MAX_SCORE: 300
+    MAX_SCORE: 300,
+    /* Results modal tier bands (section 4.4) */
+    TIER_MID_MIN: 180,
+    TIER_MID_MAX: 280
   };
 
   var AUDIO = {
@@ -102,7 +105,7 @@
     if (score >= CONFIG.MAX_SCORE) {
       return "🌟 完美的能量控制！你按到了所有圓形，而且看到其他圖形時都成功忍住不按，太厲害了！";
     }
-    if (score >= 180 && score <= 280) {
+    if (score >= CONFIG.TIER_MID_MIN && score <= CONFIG.TIER_MID_MAX) {
       return "⚡ 反應超快的小達人！你表現得很棒！下次遇到不是圓形的圖案時，記得給自己 1 秒鐘深呼吸，手放開，就能拿到更高分喔！";
     }
     return "🌱 正在成長的冷靜法寶！今天練習得很認真喔。多玩幾次，你會越來越進步的！";
