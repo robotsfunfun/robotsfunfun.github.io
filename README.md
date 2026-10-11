@@ -19,7 +19,7 @@ https://robotsfunfun.github.io/
 
 ## 在自己的電腦開啟
 
-直接用瀏覽器打開 `index.html` 就能玩。若要測試離線暫存，請在這個資料夾啟動靜態伺服器：
+請在這個資料夾啟動靜態伺服器再開啟，不要直接用瀏覽器打開 `index.html`。遊戲以 ES module 載入 Lit，從 `file://` 開啟時瀏覽器會擋住模組，畫面會是空的。
 
 ```bash
 python3 -m http.server 8080
@@ -27,10 +27,18 @@ python3 -m http.server 8080
 
 然後開啟 http://localhost:8080/
 
+第一次用 http 開啟後，服務工作程會把畫面暫存起來，之後沒有網路也能玩。
+
 ## English
 
 Calm Energy is a portrait, mobile-first Go/No-Go game for first graders. Tap blue circles within one second. Do not tap squares, triangles, or stars. There are 10 rounds, 20 points for each correct response, and a maximum of 200.
 
 Play: https://robotsfunfun.github.io/.
 
-Open `index.html` in a browser, or serve this folder with any static server. After the first visit over HTTP, the service worker caches the app shell for offline play.
+Serve this folder with any static server before opening it. The game loads Lit as an ES module, and browsers block that module from a `file://` URL, so opening `index.html` directly leaves the page blank.
+
+```bash
+python3 -m http.server 8080
+```
+
+Then open http://localhost:8080/. After the first visit over HTTP, the service worker caches the app shell for offline play.
