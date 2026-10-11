@@ -11,6 +11,13 @@
   --card: #ffffff;
   --radius: 24px;
   --shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+  /* Material Design 3 spacing scale (8dp grid) */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  /* 3D button lip depth — must be reserved so gaps stay visually honest */
+  --btn-lip: 7px;
+  --btn-lip-ghost: 5px;
   color-scheme: light;
 }
 
@@ -81,8 +88,8 @@ button:focus-visible {
   z-index: 30;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px 6px;
+  gap: var(--space-2);
+  padding: 12px var(--space-2) 6px;
   background: var(--bg);
 }
 
@@ -178,7 +185,7 @@ main {
 .rules {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-2);
 }
 
 .rule-card {
@@ -211,7 +218,7 @@ main {
 }
 
 .app-version-results {
-  margin-top: 12px;
+  margin-top: var(--space-2);
 }
 
 .start-btn,
@@ -228,7 +235,7 @@ main {
   background: var(--go);
   color: #ffffff;
   font-size: 1.3rem;
-  box-shadow: 0 7px 0 var(--go-deep), 0 14px 24px rgba(37, 99, 235, 0.16);
+  box-shadow: 0 var(--btn-lip) 0 var(--go-deep), 0 14px 24px rgba(37, 99, 235, 0.16);
 }
 
 .ghost-btn {
@@ -236,7 +243,7 @@ main {
   background: #f1f5f9;
   color: #475569;
   font-size: 1.15rem;
-  box-shadow: 0 5px 0 #e2e8f0;
+  box-shadow: 0 var(--btn-lip-ghost) 0 #e2e8f0;
 }
 
 .start-btn.is-pressed,
@@ -440,7 +447,16 @@ main {
 .results-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  /* M3 space-3 (24dp) between distinct full-width actions + lip so the
+     visible gap stays ~24dp (the 3D shadow would otherwise eat the gap). */
+  gap: calc(var(--space-3) + var(--btn-lip));
+}
+
+/* Stacked dialog actions: equal height (Apple HIG / Material consistency) */
+.results-actions .start-btn,
+.results-actions .ghost-btn {
+  min-height: 56px;
+  font-size: 1.2rem;
 }
 
 .rotate-hint {

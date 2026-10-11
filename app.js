@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.2: results robot outline visible on white score card */
-    VERSION: "1.1.2",
+    /* 1.1.3: Material-aligned spacing between results action buttons */
+    VERSION: "1.1.3",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
