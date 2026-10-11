@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.1: fix stale SW cache pairing new HTML with old MAX_SCORE 200 */
-    VERSION: "1.1.1",
+    /* 1.1.2: results robot outline visible on white score card */
+    VERSION: "1.1.2",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
