@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.3: Material-aligned spacing between results action buttons */
-    VERSION: "1.1.3",
+    /* 1.1.4: unified design tokens across welcome / game / results */
+    VERSION: "1.1.4",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
