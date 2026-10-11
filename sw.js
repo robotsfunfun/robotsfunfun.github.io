@@ -1,9 +1,9 @@
-var CACHE = "calm-energy-shell-v9";
+var CACHE = "calm-energy-shell-v10";
 var ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app-v1.1.2.js",
+  "./app.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-180.png",
@@ -14,12 +14,32 @@ var ASSETS = [
 function isShellAsset(url) {
   var path = url.pathname;
   return (
-    path.endsWith("/app-v1.1.2.js") ||
-    path.endsWith("/styles.css") ||
+    /\/app\.js$/i.test(path) ||
+    /\/styles\.css$/i.test(path) ||
     path.endsWith("/index.html") ||
     path.endsWith("/") ||
     path.endsWith("/sw.js")
   );
+}
+
+function matchExact(request) {
+  return caches.open(CACHE).then(function (cache) {
+    return cache.match(request);
+  });
+}
+
+/* Offline-only: allow the precached bare path (no query). Online always
+   network-first, so app.js?v=1.1.2 never silently becomes an old app.js. */
+function matchExactOrBarePath(request) {
+  return matchExact(request).then(function (cached) {
+    if (cached) return cached;
+    var bare = new URL(request.url);
+    if (!bare.search) return null;
+    bare.search = "";
+    return caches.open(CACHE).then(function (cache) {
+      return cache.match(bare.href);
+    });
+  });
 }
 
 function networkFirst(event, fallbackUrl) {
@@ -35,9 +55,13 @@ function networkFirst(event, fallbackUrl) {
         return response;
       })
       .catch(function () {
-        return caches.match(event.request, { ignoreSearch: true }).then(function (cached) {
+        return matchExactOrBarePath(event.request).then(function (cached) {
           if (cached) return cached;
-          if (fallbackUrl) return caches.match(fallbackUrl);
+          if (fallbackUrl) {
+            return caches.open(CACHE).then(function (cache) {
+              return cache.match(fallbackUrl);
+            });
+          }
           return Promise.reject(new Error("offline"));
         });
       })
@@ -74,8 +98,6 @@ self.addEventListener("fetch", function (event) {
 
   var accept = event.request.headers.get("accept") || "";
   var isDoc = event.request.mode === "navigate" || accept.indexOf("text/html") !== -1;
-  // HTML + app.js/CSS must be network-first so a new HTML version cannot
-  // pair with a stale cached app.js that still has MAX_SCORE: 200.
   if (isDoc || isShellAsset(url)) {
     networkFirst(event, isDoc ? "./index.html" : null);
     return;
@@ -83,7 +105,7 @@ self.addEventListener("fetch", function (event) {
 
   event.respondWith(
     caches.open(CACHE).then(function (cache) {
-      return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {
+      return cache.match(event.request).then(function (cached) {
         var networked = fetch(event.request).then(function (response) {
           if (response && response.status === 200) {
             cache.put(event.request, response.clone());
