@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v7";
+var CACHE = "calm-energy-shell-v8";
 var ASSETS = [
   "./",
   "./index.html",
@@ -10,6 +10,39 @@ var ASSETS = [
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];
+
+function isShellAsset(url) {
+  var path = url.pathname;
+  return (
+    path.endsWith("/app.js") ||
+    path.endsWith("/styles.css") ||
+    path.endsWith("/index.html") ||
+    path.endsWith("/") ||
+    path.endsWith("/sw.js")
+  );
+}
+
+function networkFirst(event, fallbackUrl) {
+  event.respondWith(
+    fetch(event.request)
+      .then(function (response) {
+        if (response && response.status === 200) {
+          var copy = response.clone();
+          caches.open(CACHE).then(function (cache) {
+            cache.put(event.request, copy);
+          });
+        }
+        return response;
+      })
+      .catch(function () {
+        return caches.match(event.request, { ignoreSearch: true }).then(function (cached) {
+          if (cached) return cached;
+          if (fallbackUrl) return caches.match(fallbackUrl);
+          return Promise.reject(new Error("offline"));
+        });
+      })
+  );
+}
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
@@ -36,22 +69,18 @@ self.addEventListener("activate", function (event) {
 
 self.addEventListener("fetch", function (event) {
   if (event.request.method !== "GET") return;
+  var url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+
   var accept = event.request.headers.get("accept") || "";
   var isDoc = event.request.mode === "navigate" || accept.indexOf("text/html") !== -1;
-  if (isDoc) {
-    event.respondWith(
-      fetch(event.request).then(function (response) {
-        var copy = response.clone();
-        caches.open(CACHE).then(function (cache) { cache.put(event.request, copy); });
-        return response;
-      }).catch(function () {
-        return caches.match(event.request, { ignoreSearch: true }).then(function (cached) {
-          return cached || caches.match("./index.html");
-        });
-      })
-    );
+  // HTML + app.js/CSS must be network-first so a new HTML version cannot
+  // pair with a stale cached app.js that still has MAX_SCORE: 200.
+  if (isDoc || isShellAsset(url)) {
+    networkFirst(event, isDoc ? "./index.html" : null);
     return;
   }
+
   event.respondWith(
     caches.open(CACHE).then(function (cache) {
       return cache.match(event.request, { ignoreSearch: true }).then(function (cached) {

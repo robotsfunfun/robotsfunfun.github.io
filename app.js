@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.0: intermediate difficulty — 15 rounds, 800ms display, random ISI */
-    VERSION: "1.1.0",
+    /* 1.1.1: fix stale SW cache pairing new HTML with old MAX_SCORE 200 */
+    VERSION: "1.1.1",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
