@@ -6,7 +6,7 @@
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
     NO_GO_SHAPES: ["square", "triangle", "star"],
-    DISPLAY_MS: 1000,
+    DISPLAY_MS: 1300,
     ISI_MS: 1000,
     FEEDBACK_MS: 600,
     RESULTS_DELAY_MS: 150,

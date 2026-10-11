@@ -4,7 +4,7 @@
 
 ## 怎麼玩
 
-1. 看到藍色**圓形**：在 1 秒內輕點圖案，或按下方「輕點這裡 (圓形專用)」。
+1. 看到藍色**圓形**：在 1.3 秒內輕點圖案，或按下方「輕點這裡 (圓形專用)」。
 2. 看到**其他圖形**（方形、三角形、星星）：手放開，不要按。
 3. 兩個圖形之間，畫面中央會出現淺灰色十字 `+`，把視線放在那裡。
 4. 一共 10 個回合。答對得 20 分，滿分 200 分。
@@ -29,7 +29,7 @@ python3 -m http.server 8080
 
 ## English
 
-Calm Energy is a portrait, mobile-first Go/No-Go game for first graders. Tap blue circles within one second. Do not tap squares, triangles, or stars. There are 10 rounds, 20 points for each correct response, and a maximum of 200.
+Calm Energy is a portrait, mobile-first Go/No-Go game for first graders. Tap blue circles within 1.3 seconds. Do not tap squares, triangles, or stars. There are 10 rounds, 20 points for each correct response, and a maximum of 200.
 
 Play: https://robotsfunfun.github.io/.
 
