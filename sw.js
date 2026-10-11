@@ -71,7 +71,9 @@ function networkFirst(event, fallbackUrl) {
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS.map(function (url) {
+        return new Request(url, { cache: "reload" });
+      }));
     })
   );
   self.skipWaiting();
