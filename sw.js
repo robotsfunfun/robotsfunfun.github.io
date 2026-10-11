@@ -1,9 +1,9 @@
-var CACHE = "calm-energy-shell-v8";
+var CACHE = "calm-energy-shell-v9";
 var ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app-v1.1.1.js",
+  "./app-v1.1.2.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-180.png",
@@ -14,7 +14,7 @@ var ASSETS = [
 function isShellAsset(url) {
   var path = url.pathname;
   return (
-    path.endsWith("/app-v1.1.1.js") ||
+    path.endsWith("/app-v1.1.2.js") ||
     path.endsWith("/styles.css") ||
     path.endsWith("/index.html") ||
     path.endsWith("/") ||
