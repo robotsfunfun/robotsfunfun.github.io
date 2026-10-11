@@ -2,6 +2,8 @@
   "use strict";
 
   var CONFIG = {
+    /* 1.1.0: intermediate difficulty — 15 rounds, 800ms display, random ISI */
+    VERSION: "1.1.0",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
@@ -379,6 +381,9 @@
   });
   document.querySelectorAll("[data-max]").forEach(function (el) {
     el.textContent = String(CONFIG.MAX_SCORE);
+  });
+  document.querySelectorAll("[data-version]").forEach(function (el) {
+    el.textContent = CONFIG.VERSION;
   });
 
   state.muted = false;

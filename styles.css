@@ -201,6 +201,19 @@ main {
   color: var(--nogo-ink);
 }
 
+.app-version {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.app-version-results {
+  margin-top: 12px;
+}
+
 .start-btn,
 .ghost-btn,
 .cushion {
