@@ -459,7 +459,7 @@ main {
 .results-robot svg {
   width: 84px;
   height: 84px;
-  filter: drop-shadow(0 8px 14px rgba(59, 130, 246, 0.16));
+  filter: drop-shadow(0 12px 18px rgba(59, 130, 246, 0.12));
 }
 
 .results-card h2 {

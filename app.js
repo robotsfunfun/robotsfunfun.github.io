@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.5: robot + stimulus SVG fills/strokes use CSS color tokens */
-    VERSION: "1.1.5",
+    /* 1.1.6: same token-backed robot colours on welcome and results screens */
+    VERSION: "1.1.6",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
