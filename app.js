@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.4: unified design tokens across welcome / game / results */
-    VERSION: "1.1.4",
+    /* 1.1.5: robot + stimulus SVG fills/strokes use CSS color tokens */
+    VERSION: "1.1.5",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
@@ -38,13 +38,13 @@
 
   var SHAPE_SVG = {
     circle:
-      '<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="76" fill="#3b82f6"/></svg>',
+      '<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="76" fill="var(--color-primary)"/></svg>',
     square:
-      '<svg viewBox="0 0 200 200" aria-hidden="true"><rect x="32" y="32" width="136" height="136" rx="16" fill="#f43f5e"/></svg>',
+      '<svg viewBox="0 0 200 200" aria-hidden="true"><rect x="32" y="32" width="136" height="136" rx="16" fill="var(--color-error)"/></svg>',
     triangle:
-      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 188,176 12,176" fill="#f43f5e" stroke="#f43f5e" stroke-linejoin="round" stroke-width="18"/></svg>',
+      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 188,176 12,176" fill="var(--color-error)" stroke="var(--color-error)" stroke-linejoin="round" stroke-width="18"/></svg>',
     star:
-      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 122,74 182,74 134,110 152,168 100,132 48,168 66,110 18,74 78,74" fill="#f43f5e"/></svg>'
+      '<svg viewBox="0 0 200 200" aria-hidden="true"><polygon points="100,18 122,74 182,74 134,110 152,168 100,132 48,168 66,110 18,74 78,74" fill="var(--color-error)"/></svg>'
   };
 
   var welcomeEl = document.getElementById("welcome");
