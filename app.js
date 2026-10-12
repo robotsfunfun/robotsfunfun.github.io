@@ -2,9 +2,9 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.6: same token-backed robot colours on welcome and results screens */
-    VERSION: "1.1.6",
-    TOTAL_ROUNDS: 15,
+    /* 1.1.7: 20 rounds, max score 400 */
+    VERSION: "1.1.7",
+    TOTAL_ROUNDS: 20,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
     NO_GO_SHAPES: ["square", "triangle", "star"],
@@ -16,10 +16,10 @@
     DEBOUNCE_MS: 280,
     HIT_POINTS: 20,
     REJECTION_POINTS: 20,
-    MAX_SCORE: 300,
-    /* Results modal tier bands (section 4.4) */
-    TIER_MID_MIN: 180,
-    TIER_MID_MAX: 280
+    MAX_SCORE: 400,
+    /* Results modal tier bands (section 4.4), scaled for 400 max */
+    TIER_MID_MIN: 240,
+    TIER_MID_MAX: 370
   };
 
   var AUDIO = {
