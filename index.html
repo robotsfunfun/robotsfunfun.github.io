@@ -23,7 +23,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="stylesheet" href="styles.css?v=1.1.4">
+  <link rel="stylesheet" href="styles.css?v=1.1.5">
 </head>
 <body>
   <div id="app">
@@ -46,13 +46,13 @@
           <svg class="robot" viewBox="0 0 160 160">
             <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
             <circle cx="80" cy="22" r="8" fill="#10b981"/>
-            <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff"/>
+            <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff" stroke="#93c5fd" stroke-width="4"/>
             <circle cx="62" cy="76" r="7" fill="#3b82f6"/>
             <circle cx="98" cy="76" r="7" fill="#3b82f6"/>
             <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
             <circle cx="50" cy="90" r="4" fill="#fecdd3"/>
             <circle cx="110" cy="90" r="4" fill="#fecdd3"/>
-            <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe"/>
+            <rect x="54" y="120" width="52" height="26" rx="13" fill="#dbeafe" stroke="#93c5fd" stroke-width="3"/>
             <circle cx="72" cy="133" r="3.5" fill="#3b82f6"/>
             <circle cx="88" cy="133" r="3.5" fill="#10b981"/>
           </svg>
@@ -64,7 +64,7 @@
         </div>
 
         <button type="button" class="start-btn" data-action="start">開始</button>
-        <p class="app-version" aria-label="遊戲版本">版本 <span data-version>1.1.4</span></p>
+        <p class="app-version" aria-label="遊戲版本">版本 <span data-version>1.1.5</span></p>
       </section>
 
       <section id="game" class="screen" hidden>
@@ -90,7 +90,7 @@
         <svg viewBox="0 0 160 160">
           <line x1="80" y1="28" x2="80" y2="44" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>
           <circle cx="80" cy="22" r="8" fill="#10b981"/>
-          <rect x="36" y="46" width="88" height="68" rx="26" fill="#eff6ff" stroke="#93c5fd" stroke-width="4"/>
+          <rect x="36" y="46" width="88" height="68" rx="26" fill="#ffffff" stroke="#93c5fd" stroke-width="4"/>
           <circle cx="62" cy="76" r="7" fill="#3b82f6"/>
           <circle cx="98" cy="76" r="7" fill="#3b82f6"/>
           <path d="M62 92 Q80 104 98 92" fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
@@ -109,11 +109,11 @@
         <button type="button" class="start-btn" data-action="replay">再玩一次</button>
         <button type="button" class="ghost-btn" data-action="home">回首頁</button>
       </div>
-      <p class="app-version app-version-results" aria-label="遊戲版本">版本 <span data-version>1.1.4</span></p>
+      <p class="app-version app-version-results" aria-label="遊戲版本">版本 <span data-version>1.1.5</span></p>
     </div>
   </div>
 
   <div class="rotate-hint" role="note">請把手機直著拿喔</div>
-  <script src="app.js?v=1.1.4"></script>
+  <script src="app.js?v=1.1.5"></script>
 </body>
 </html>
