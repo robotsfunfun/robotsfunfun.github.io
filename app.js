@@ -2,8 +2,8 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.7: 20 rounds, max score 400 */
-    VERSION: "1.1.7",
+    /* 1.1.8: section 4.4 results tiers — 400 / 260–380 / ≤240 */
+    VERSION: "1.1.8",
     TOTAL_ROUNDS: 20,
     GO_RATIO: 0.6,
     GO_SHAPE: "circle",
@@ -17,9 +17,9 @@
     HIT_POINTS: 20,
     REJECTION_POINTS: 20,
     MAX_SCORE: 400,
-    /* Results modal tier bands (section 4.4), scaled for 400 max */
-    TIER_MID_MIN: 240,
-    TIER_MID_MAX: 370
+    /* Results modal tier bands (section 4.4) */
+    TIER_MID_MIN: 260,
+    TIER_MID_MAX: 380
   };
 
   var AUDIO = {
@@ -104,6 +104,7 @@
   }
 
   function tierMessage(score) {
+    /* 4.4: 400 perfect; 260–380 mid; ≤240 growing (else covers ≤240) */
     if (score >= CONFIG.MAX_SCORE) {
       return "🌟 完美的能量控制！你按到了所有圓形，而且看到其他圖形時都成功忍住不按，太厲害了！";
     }
