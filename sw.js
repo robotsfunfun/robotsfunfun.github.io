@@ -1,4 +1,4 @@
-var CACHE = "calm-energy-shell-v11";
+var CACHE = "calm-energy-shell-v12";
 var ASSETS = [
   "./",
   "./index.html",
@@ -29,7 +29,7 @@ function matchExact(request) {
 }
 
 /* Offline-only: allow the precached bare path (no query). Online always
-   network-first, so app.js?v=1.1.3 never silently becomes an old app.js. */
+   network-first, so app.js?v=1.1.4 never silently becomes an old app.js. */
 function matchExactOrBarePath(request) {
   return matchExact(request).then(function (cached) {
     if (cached) return cached;
