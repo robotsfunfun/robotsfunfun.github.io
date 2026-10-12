@@ -2,10 +2,11 @@
   "use strict";
 
   var CONFIG = {
-    /* 1.1.6: same token-backed robot colours on welcome and results screens */
-    VERSION: "1.1.6",
+    /* 1.1.7: fixed 11 Go / 4 No-Go per game (~73% Go), shuffled order */
+    VERSION: "1.1.7",
     TOTAL_ROUNDS: 15,
     GO_RATIO: 0.6,
+    GO_COUNT: 11,
     GO_SHAPE: "circle",
     NO_GO_SHAPES: ["square", "triangle", "star"],
     DISPLAY_MS: 800,
@@ -128,9 +129,28 @@
     return CONFIG.NO_GO_SHAPES[index];
   }
 
+  /* Fixed Go/No-Go counts per game, Fisher-Yates shuffled, so every game is equally hard. */
+  function buildSequence(random) {
+    var rand = random || Math.random;
+    var seq = [];
+    var i;
+    for (i = 0; i < CONFIG.GO_COUNT; i++) seq.push(CONFIG.GO_SHAPE);
+    var nogoTotal = CONFIG.TOTAL_ROUNDS - CONFIG.GO_COUNT;
+    var offset = Math.floor(rand() * CONFIG.NO_GO_SHAPES.length);
+    for (i = 0; i < nogoTotal; i++) {
+      seq.push(CONFIG.NO_GO_SHAPES[(offset + i) % CONFIG.NO_GO_SHAPES.length]);
+    }
+    for (i = seq.length - 1; i > 0; i--) {
+      var j = Math.floor(rand() * (i + 1));
+      var tmp = seq[i]; seq[i] = seq[j]; seq[j] = tmp;
+    }
+    return seq;
+  }
+
   function takeShape() {
     var queue = window.__calm && window.__calm.queue;
     if (queue && queue.length) return queue.shift();
+    if (state.sequence && state.sequence.length) return state.sequence.shift();
     return pickShape();
   }
 
@@ -321,6 +341,7 @@
     state.shape = null;
     state.responded = false;
     state.history = [];
+    state.sequence = buildSequence();
     state.phase = "idle";
     state.screen = "game";
     welcomeEl.hidden = true;
@@ -420,6 +441,7 @@
     judge: judge,
     tierMessage: tierMessage,
     pickShape: pickShape,
+    buildSequence: buildSequence,
     isiMs: isiMs,
     queue: [],
     getState: function () {
